@@ -1,0 +1,248 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import { sanityClient, urlFor } from "@/lib/sanity";
+import { PortableText } from "astro-portabletext";
+import { Icon } from "astro-icon/components";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import type { DevProject } from "@/lib/sanity";
+
+export async function getStaticPaths() {
+  const query = `*[_type == "devProject"]{ "slug": slug.current }`;
+  const projects = await sanityClient.fetch(query);
+
+  return projects.map((project: { slug: string }) => ({
+    params: { slug: project.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+
+const query = `*[_type == "devProject" && slug.current == $slug][0]{
+  title,
+  subtitle,
+  mainImage,
+  summary,
+  role,
+  client,
+  timeline,
+  status,
+  liveUrl,
+  repoLinks,
+  techStack,
+  keyFeatures,
+  gallery
+}`;
+
+const project = await sanityClient.fetch<DevProject>(query, { slug });
+
+if (!project) return Astro.redirect("/404");
+
+const statusColors: Record<string, string> = {
+  ongoing: "bg-amber-100 text-amber-700 border-amber-200",
+  completed: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  archived: "bg-zinc-100 text-zinc-700 border-zinc-200",
+};
+---
+
+<MainLayout
+  title={`${project.title} | Case Study`}
+  description={project.summary}
+>
+  <article class="animate-in fade-in duration-500">
+    <header class="mb-12 border-b border-zinc-100 pb-12">
+      <div class="mb-6 flex gap-4 items-center">
+        <a
+          href="/"
+          class="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-blue-600 transition-colors"
+        >
+          <Icon name="ph:arrow-left-bold" class="mr-2 w-4 h-4" />
+          Back to Projects
+        </a>
+        <span
+          class={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider border ${statusColors[project.status || "completed"]}`}
+        >
+          {project.status || "Completed"}
+        </span>
+      </div>
+
+      <h1
+        class="text-4xl md:text-6xl font-extrabold tracking-tight text-zinc-900 mb-4"
+      >
+        {project.title}
+      </h1>
+
+      {
+        project.subtitle && (
+          <p class="text-xl md:text-2xl text-zinc-500 max-w-3xl leading-relaxed">
+            {project.subtitle}
+          </p>
+        )
+      }
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-24">
+      <div class="lg:col-span-2 space-y-12">
+        {
+          project.mainImage && (
+            <div class="rounded-2xl overflow-hidden shadow-sm border border-zinc-100 bg-zinc-50">
+              <img
+                src={urlFor(project.mainImage).width(1200).height(800).url()}
+                alt={project.title}
+                class="w-full h-auto object-cover hover:scale-105 transition-transform duration-700"
+              />
+            </div>
+          )
+        }
+
+        <section class="prose prose-zinc prose-lg dark:prose-invert max-w-none">
+          <h3 class="text-2xl font-bold text-zinc-900 mb-4">
+            Executive Summary
+          </h3>
+          <p class="text-zinc-600 leading-relaxed">
+            {project.summary}
+          </p>
+        </section>
+
+        {
+          project.keyFeatures && (
+            <section>
+              <h3 class="text-2xl font-bold text-zinc-900 mb-6 flex items-center gap-2">
+                <Icon name="ph:star-four-fill" class="text-blue-600 w-6 h-6" />
+                Key Features
+              </h3>
+              <div class="grid gap-4 md:grid-cols-2">
+                {project.keyFeatures.map((feature: string) => (
+                  <div class="flex gap-3 p-4 rounded-xl bg-zinc-50 border border-zinc-100">
+                    <Icon
+                      name="ph:check-circle-fill"
+                      class="text-emerald-500 w-6 h-6 flex-shrink-0 mt-0.5"
+                    />
+                    <span class="text-zinc-700 font-medium">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        {
+          project.gallery && (
+            <section class="space-y-6">
+              <h3 class="text-2xl font-bold text-zinc-900">Project Gallery</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {project.gallery.map((image: any) => (
+                  <div class="group relative rounded-xl overflow-hidden border border-zinc-100">
+                    <img
+                      src={urlFor(image).width(600).height(400).url()}
+                      alt="Gallery"
+                      class="w-full h-full object-cover"
+                    />
+                    {image.caption && (
+                      <div class="absolute bottom-0 left-0 right-0 bg-black/60 backdrop-blur-sm p-3 translate-y-full group-hover:translate-y-0 transition-transform">
+                        <p class="text-white text-xs font-medium">
+                          {image.caption}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )
+        }
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div
+          class="sticky top-32 space-y-8 p-6 rounded-2xl bg-white border border-zinc-200 shadow-sm"
+        >
+          <div class="space-y-6">
+            <h3 class="text-lg font-bold text-zinc-900 flex items-center gap-2">
+              <Icon name="ph:info-bold" />
+              Project Info
+            </h3>
+
+            <dl class="space-y-4 text-sm">
+              <div class="flex justify-between py-2 border-b border-zinc-100">
+                <dt class="text-zinc-500">Role</dt>
+                <dd class="font-medium text-zinc-900 text-right">
+                  {project.role || "Full Stack Dev"}
+                </dd>
+              </div>
+              <div class="flex justify-between py-2 border-b border-zinc-100">
+                <dt class="text-zinc-500">Client</dt>
+                <dd class="font-medium text-zinc-900 text-right">
+                  {project.client || "Personal Project"}
+                </dd>
+              </div>
+              <div class="flex justify-between py-2 border-b border-zinc-100">
+                <dt class="text-zinc-500">Timeline</dt>
+                <dd class="font-medium text-zinc-900 text-right">
+                  {project.timeline || "2024"}
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="space-y-3">
+            <h3
+              class="text-sm font-semibold text-zinc-500 uppercase tracking-wider"
+            >
+              Tech Stack
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              {
+                project.techStack?.map((tech: string) => (
+                  <Badge
+                    variant="secondary"
+                    className="px-3 py-1 text-sm bg-zinc-100 hover:bg-zinc-200 text-zinc-800"
+                  >
+                    {tech}
+                  </Badge>
+                ))
+              }
+            </div>
+          </div>
+
+          <div class="space-y-3 pt-4 border-t border-zinc-100">
+            {
+              project.liveUrl && (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block"
+                >
+                  <Button className="w-full gap-2 font-semibold">
+                    <Icon name="ph:globe-bold" class="w-4 h-4" />
+                    Visit Live Site
+                  </Button>
+                </a>
+              )
+            }
+
+            {
+              project.repoLinks?.map((repo: any) => (
+                <a
+                  href={repo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block"
+                >
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2 text-zinc-700"
+                  >
+                    <Icon name="ph:github-logo-bold" class="w-4 h-4" />
+                    {repo.label || "View Source Code"}
+                  </Button>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </aside>
+    </div>
+  </article>
+</MainLayout>

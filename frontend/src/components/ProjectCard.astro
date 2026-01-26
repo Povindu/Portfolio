@@ -25,7 +25,9 @@ const { project } = Astro.props;
   <CardHeader>
     <div class="flex justify-between items-start gap-4">
       <div class="space-y-1">
-        <CardTitle className="text-xl font-bold tracking-tight text-card-foreground">
+        <CardTitle
+          className="text-xl font-bold tracking-tight text-card-foreground"
+        >
           {project.title}
         </CardTitle>
         <CardDescription className="text-sm text-muted-foreground">

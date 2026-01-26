@@ -1,0 +1,21 @@
+backend/node_modules
+frontend/node_modules
+
+backend/.env
+frontend/.env
+backend/.sanity
+
+
+# build output
+frontend/dist/
+# generated types
+frontend/.astro/
+frontend/.vscode/
+
+
+# logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+.vscode/settings.json
