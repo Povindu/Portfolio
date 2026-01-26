@@ -13,6 +13,38 @@
  */
 
 // Source: schema.json
+export type SanityFileAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.fileAsset'
+}
+
+export type Profile = {
+  _id: string
+  _type: 'profile'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  fullName?: string
+  headline?: string
+  shortBio?: string
+  email?: string
+  location?: string
+  availability?: 'available' | 'open' | 'busy'
+  resume?: {
+    asset?: SanityFileAssetReference
+    media?: unknown
+    _type: 'file'
+  }
+  socialLinks?: Array<{
+    platform?: string
+    url?: string
+    icon?: string
+    _key: string
+  }>
+}
+
 export type SanityImageAssetReference = {
   _ref: string
   _type: 'reference'
@@ -28,7 +60,7 @@ export type DevProject = {
   _rev: string
   title?: string
   subtitle?: string
-  slug: Slug
+  slug?: Slug
   mainImage?: {
     asset?: SanityImageAssetReference
     media?: unknown
@@ -181,6 +213,8 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | SanityFileAssetReference
+  | Profile
   | SanityImageAssetReference
   | DevProject
   | SanityImageCrop
