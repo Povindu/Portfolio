@@ -1,0 +1,71 @@
+---
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Icon } from "astro-icon/components";
+import type { DevProject } from "@/lib/sanity";
+
+interface Props {
+  project: DevProject;
+}
+
+const { project } = Astro.props;
+---
+
+<Card
+  className="flex flex-col h-full hover:shadow-lg transition-all duration-300 border-border bg-card"
+>
+  <CardHeader>
+    <div class="flex justify-between items-start gap-4">
+      <div class="space-y-1">
+        <CardTitle className="text-xl font-bold tracking-tight text-card-foreground">
+          {project.title}
+        </CardTitle>
+        <CardDescription className="text-sm text-muted-foreground">
+          {project.subtitle || "Engineering Case Study"}
+        </CardDescription>
+      </div>
+      <div class="p-2 bg-accent rounded-full text-accent-foreground">
+        <Icon name="ph:code-bold" class="w-5 h-5" />
+      </div>
+    </div>
+  </CardHeader>
+
+  <CardContent className="flex-grow">
+    <p class="text-muted-foreground leading-relaxed text-sm mb-6">
+      {project.summary}
+    </p>
+
+    <div class="flex flex-wrap gap-2 mt-auto">
+      {
+        project.techStack?.map((tech) => (
+          <Badge
+            variant="secondary"
+            className="px-2 py-0.5 text-xs font-medium"
+          >
+            {tech}
+          </Badge>
+        ))
+      }
+    </div>
+  </CardContent>
+
+  <CardFooter className="pt-4 border-t border-border">
+    <a href={`/projects/${project.slug.current}`} class="w-full">
+      <Button variant="default" className="w-full gap-2 group">
+        View Case Study
+        <Icon
+          name="ph:arrow-right-bold"
+          class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+        />
+      </Button>
+    </a>
+  </CardFooter>
+</Card>
