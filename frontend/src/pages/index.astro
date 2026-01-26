@@ -3,8 +3,10 @@ import MainLayout from "@/layouts/MainLayout.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { sanityClient, getProfile } from "@/lib/sanity";
 import type { DevProject } from "@/lib/sanity.ts";
+import { Icon } from "astro-icon/components";
+import { ContactForm } from "@/components/ContactForm";
 
-// Fetch Query
+
 const query = `*[_type == "devProject"] | order(_createdAt desc) {
   title,
   subtitle,
@@ -73,7 +75,20 @@ const profile = await getProfile();
     </div>
   </header>
 
+  
+
   <section id="projects" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
     {projects.map((project) => <ProjectCard project={project} />)}
   </section>
+
+  <section id="contact" class="max-w-5xl mx-auto px-6 py-10">
+    <h2 class="text-3xl font-bold text-zinc-900 mb-6 dark:text-white">
+      Contact Me
+    </h2>
+    <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+      Get in touch with me to discuss your next project or collaboration.
+    </p>
+    <ContactForm client:only="react" /> 
+  </section>
+
 </MainLayout>
