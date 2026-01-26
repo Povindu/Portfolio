@@ -1,7 +1,7 @@
 ---
 import MainLayout from "@/layouts/MainLayout.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
-import { sanityClient } from "@/lib/sanity";
+import { sanityClient, getProfile } from "@/lib/sanity";
 import type { DevProject } from "@/lib/sanity.ts";
 
 // Fetch Query
@@ -14,50 +14,62 @@ const query = `*[_type == "devProject"] | order(_createdAt desc) {
 }`;
 
 const projects = await sanityClient.fetch<DevProject[]>(query);
+const profile = await getProfile();
 ---
 
 <MainLayout
-  title="Povindu | Software Engineer"
-  description="My engineering portfolio"
+  title={`${profile.fullName} | Software Engineer`}
+  description={profile.shortBio}
 >
   <header class="mb-16 space-y-6">
     <div
-      class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-xs font-semibold tracking-wide uppercase"
+      class={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase ${
+        profile.availability === "available"
+          ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+          : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+      }`}
     >
       <span
-        class="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse"
-      ></span>
-      Available for Hire
+        class={`w-2 h-2 rounded-full ${
+          profile.availability === "available"
+            ? "bg-emerald-600 animate-pulse dark:bg-emerald-400"
+            : "bg-zinc-500 dark:bg-zinc-400"
+        }`}></span>
+      {
+        profile.availability === "available"
+          ? "Available for Hire"
+          : "Open to Opportunities"
+      }
     </div>
 
     <h1
       class="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground"
     >
-      Engineering <span class="text-blue-600 dark:text-blue-400">Solutions</span
-      >
-      <br class="hidden md:block" />
-      that Scale.
+      {profile.headline}
     </h1>
 
     <p class="text-lg text-muted-foreground max-w-2xl leading-relaxed">
-      I don't just write code; I build systems. Specialized in
-      <strong class="text-foreground">.NET Architecture</strong> and
-      <strong class="text-foreground">Modern Web Performance</strong>.
+      {profile.shortBio}
     </p>
 
     <div class="flex gap-4 pt-4">
       <a
         href="#projects"
-        class="px-6 py-3 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition"
+        class="px-6 py-3 bg-zinc-900 text-white font-medium rounded-lg hover:bg-zinc-800 transition dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
       >
         View Work
       </a>
-      <a
-        href="/resume"
-        class="px-6 py-3 border border-border text-foreground font-medium rounded-lg hover:bg-accent transition"
-      >
-        Download CV
-      </a>
+      {
+        profile.resumeURL && (
+          <a
+            href={profile.resumeURL}
+            target="_blank"
+            class="px-6 py-3 border border-zinc-200 text-zinc-700 font-medium rounded-lg hover:bg-zinc-50 transition dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          >
+            Download CV
+          </a>
+        )
+      }
     </div>
   </header>
 

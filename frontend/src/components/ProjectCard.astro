@@ -60,7 +60,7 @@ const { project } = Astro.props;
   </CardContent>
 
   <CardFooter className="pt-4 border-t border-border">
-    <a href={`/projects/${project.slug.current}`} class="w-full">
+    <a href={`/projects/${project.slug?.current}`} class="w-full">
       <Button variant="default" className="w-full gap-2 group">
         View Case Study
         <Icon
