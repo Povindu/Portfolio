@@ -21,4 +21,8 @@ export default defineConfig({
       },
     }),
   ],
+
+  redirects: {
+    '/admin': 'https://povindu-portfolio.sanity.studio',
+  },
 });
