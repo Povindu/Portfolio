@@ -2,8 +2,10 @@
 import { SEO } from "astro-seo";
 import { Navbar } from "@/components/NavBar";
 import "@/styles/global.css";
-import { getProfile } from "@/lib/sanity"; // Import fetcher
+import { getProfile } from "@/lib/sanity";
 import { Icon } from "astro-icon/components";
+import { ScrollProgress } from "@/components/magicui/scroll-progress";
+import "@/styles/global.css";
 
 const profile = await getProfile();
 
@@ -32,18 +34,27 @@ const { title, description } = Astro.props;
           ? "dark"
           : "light";
       };
-      const isDark = getThemePreference() === "dark";
-      document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+      const applyTheme = (theme) => {
+        const isDark = theme === "dark";
+        document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+      };
 
-      if (typeof localStorage !== "undefined") {
-        const observer = new MutationObserver(() => {
-          const isDark = document.documentElement.classList.contains("dark");
-          localStorage.setItem("theme", isDark ? "dark" : "light");
-        });
-        observer.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ["class"],
-        });
+      const theme = getThemePreference();
+      applyTheme(theme);
+
+      if (
+        typeof localStorage !== "undefined" &&
+        !localStorage.getItem("theme")
+      ) {
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+        const handler = (e) => applyTheme(e.matches ? "dark" : "light");
+        if (typeof media.addEventListener === "function") {
+          media.addEventListener("change", handler);
+        } else {
+          const legacyAddListener = /** @type {any} */ (media).addListener;
+          if (typeof legacyAddListener === "function")
+            legacyAddListener.call(media, handler);
+        }
       }
     </script>
 
@@ -54,8 +65,9 @@ const { title, description } = Astro.props;
     class="bg-background text-foreground min-h-screen flex flex-col font-sans antialiased transition-colors duration-300"
   >
     <Navbar client:load />
+    <ScrollProgress client:load className="top-[65px]" />
 
-    <main class="flex-grow pt-24 px-6 md:px-12 max-w-5xl mx-auto w-full">
+    <main class="flex-grow pt-16 w-full">
       <slot />
     </main>
 

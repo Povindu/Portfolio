@@ -1,4 +1,10 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource/geist-sans";
+@import "@fontsource/inter";
+
+/* Use class-based dark mode (not OS media) */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: 0 0% 100%;
@@ -52,4 +58,35 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+}
+
+@theme inline {
+  --font-geist: "Geist Sans", "Inter", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --animate-shiny-text: shiny-text 8s infinite;
+  @keyframes shiny-text {
+    0%,
+    90%,
+    100% {
+      background-position: calc(-100% - var(--shiny-width)) 0;
+    }
+    30%,
+    60% {
+      background-position: calc(100% + var(--shiny-width)) 0;
+    }
+  }
+  --animate-meteor: meteor 5s linear infinite;
+  @keyframes meteor {
+    0% {
+      transform: rotate(var(--angle)) translateX(0);
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(var(--angle)) translateX(-500px);
+      opacity: 0;
+    }
+  }
 }
