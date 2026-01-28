@@ -28,8 +28,7 @@ export function ContactForm() {
       const data = await response.json().catch(() => null);
 
       if (!response.ok || !data?.success) {
-        const message =
-          "Message failed to send. Please try again.";
+        const message = "Message failed to send. Please try again.";
         setError(message);
         return;
       }
@@ -38,7 +37,9 @@ export function ContactForm() {
       form.reset();
     } catch (err) {
       console.error("Form submission error:", err);
-      setError("Message failed to send. Please check your connection and try again.");
+      setError(
+        "Message failed to send. Please check your connection and try again."
+      );
     } finally {
       setIsSubmitting(false);
     }

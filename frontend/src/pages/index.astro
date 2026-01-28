@@ -2,74 +2,50 @@
 import MainLayout from "@/layouts/MainLayout.astro";
 import ProjectCard from "@/components/ProjectCard.astro";
 import { sanityClient, getProfile } from "@/lib/sanity";
-import type { DevProject } from "@/lib/sanity.ts";
+import type { DevProject, Experience, Education } from "@/lib/sanity.ts";
 import { ContactForm } from "@/components/ContactForm";
-import { Meteors } from "@/components/ui/meteors";
+import { ExperienceSection } from "@/components/ExperienceSection";
+import { EducationSection } from "@/components/EducationSection";
+import { HeroSection } from "@/components/HeroSection";
 
 const query = `*[_type == "devProject"] | order(_createdAt desc) {
   title,
   subtitle,
   slug,
   summary,
-  techStack
+  techStack,
 }`;
 
 const projects = await sanityClient.fetch<DevProject[]>(query);
+const expQuery = `*[_type == "experience"] | order(startDate desc)`;
+const experiences = await sanityClient.fetch<Experience[]>(expQuery);
+const educationQuery = `*[_type == "education"] | order(startDate desc)`;
+const educationList = await sanityClient.fetch<Education[]>(educationQuery);
+
 const profile = await getProfile();
 ---
 
 <MainLayout
-  title={`${profile.fullName} | Software Engineer`}
-  description={profile.shortBio}
+  title={`${profile?.fullName} | Software Engineer`}
+  description={profile?.shortBio}
 >
-  <header class="mb-16 space-y-6 border border-red-600">
-    <div class="relative h-screen w-full overflow-hidden">
-      <Meteors client:load />
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <h1
-          class="text-4xl md:text-6xl w-full font-bold tracking-tight text-foreground font-geist"
-        >
-          {profile.fullName}
-        </h1>
-        <h1
-          class="text-2xl md:text-4xl font-bold tracking-tight text-foreground font-geist"
-        >
-          {profile.headline}
-        </h1>
+  {profile && <HeroSection client:load profile={profile} />}
+  <section id="experience" class="max-w-6xl mx-auto px-6 py-10">
+    <ExperienceSection client:load experiences={experiences} />
+  </section>
 
-        <p class="text-lg text-muted-foreground max-w-2xl leading-relaxed mt-4">
-          {profile.shortBio}
-        </p>
+  <section id="education" class="max-w-6xl mx-auto px-6 py-10">
+    <EducationSection client:load educationList={educationList} />
+  </section>
 
-        <div class="flex gap-4 pt-4">
-          <a
-            href="#projects"
-            class="px-6 py-3 bg-zinc-900 text-white font-medium rounded-lg hover:bg-zinc-800 transition dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            View Work
-          </a>
-          {
-            profile.resumeURL && (
-              <a
-                href={profile.resumeURL}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="px-6 py-3 border border-zinc-200 text-zinc-900 font-medium rounded-lg hover:bg-zinc-50 transition dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-800"
-              >
-                Download CV
-              </a>
-            )
-          }
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <section id="projects" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mx-20">
+  <section
+    id="projects"
+    class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto px-6 py-10"
+  >
     {projects.map((project) => <ProjectCard project={project} />)}
   </section>
 
-  <section id="contact" class="max-w-5xl mx-auto px-6 py-10">
+  <section id="contact" class="max-w-6xl mx-auto px-6 py-10">
     <h2 class="text-3xl font-bold text-zinc-900 mb-6 dark:text-white">
       Contact Me
     </h2>

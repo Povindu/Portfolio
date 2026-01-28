@@ -79,12 +79,12 @@ const { title, description } = Astro.props;
       >
         <p>
           © {new Date().getFullYear()}
-          {profile.fullName}. {profile.location}
+          {profile?.fullName}. {profile?.location}
         </p>
 
         <div class="flex gap-6 mt-4 md:mt-0 items-center">
           {
-            profile.socialLinks?.map((link: any) => (
+            profile?.socialLinks?.map((link: any) => (
               <a
                 href={link.url}
                 target="_blank"

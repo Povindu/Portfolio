@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
@@ -35,7 +40,7 @@ export const Navbar = () => {
             Povindu
           </span>
         </a>
-
+        {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <a
@@ -69,30 +74,65 @@ export const Navbar = () => {
             <ModeToggle />
           </div>
         </div>
-
+        {/* Mobile */}
         <div className="md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="w-6 h-6" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full border border-border bg-background/80 shadow-sm"
+              >
+                <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
-              <div className="flex flex-col gap-6 mt-10">
+            <SheetContent
+              side="right"
+              className="text-zinc-900 dark:text-zinc-50 bg-white dark:bg-zinc-950 border-l border-border px-6 py-10"
+              aria-describedby={undefined}
+            >
+              <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+              <div className="flex h-full flex-col gap-6">
                 {navLinks.map((link) => (
                   <a
                     key={link.name}
                     href={link.href}
-                    className="text-lg font-medium text-white hover:text-zinc-200 transition-colors"
+                    className="text-lg font-medium text-foreground hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
                   >
                     {link.name}
                   </a>
                 ))}
-                <hr className="border-zinc-100" />
-                <Button className="w-full">Download Resume</Button>
-                <div className="flex justify-center gap-4 mt-4">
-                  <GithubIcon className="w-5 h-5 text-zinc-500" />
-                  <LinkedinIcon className="w-5 h-5 text-zinc-500" />
+                <hr className="border-border" />
+                <Button className="w-full text-zinc-900 dark:text-zinc-50 bg-white border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-950" asChild>
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Download Resume
+                  </a>
+                </Button>
+                
+                <div className="flex items-center justify-center gap-4 mt-4">
+                  <Button variant="ghost" size="icon" asChild>
+                    <a
+                      href="https://github.com/Povindu"
+                      target="_blank"
+                      aria-label="GitHub"
+                    >
+                      <GithubIcon className="w-5 h-5" />
+                    </a>
+                  </Button>
+                  <Button variant="ghost" size="icon" asChild>
+                    <a
+                      href="https://www.linkedin.com/in/pcsamarasekara/"
+                      target="_blank"
+                      aria-label="LinkedIn"
+                    >
+                      <LinkedinIcon className="w-5 h-5" />
+                    </a>
+                  </Button>
+                  <ModeToggle />
                 </div>
               </div>
             </SheetContent>
