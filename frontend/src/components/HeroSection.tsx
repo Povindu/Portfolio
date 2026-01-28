@@ -9,7 +9,7 @@ interface Props {
 
 export const HeroSection = ({ profile }: Props) => {
   return (
-    <section className="relative h-screen w-full overflow-hidden flex items-center border-b border-zinc-200 dark:border-zinc-800 bg-background">
+    <section className="relative h-screen w-full overflow-hidden flex items-center bg-background">
 
       <Meteors number={20} />
 

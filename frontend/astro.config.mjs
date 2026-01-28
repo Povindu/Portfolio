@@ -17,6 +17,7 @@ export default defineConfig({
     icon({
       include: {
         ph: ["*"],
+        logos: ["*"],
       },
     }),
   ],

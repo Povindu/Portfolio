@@ -9,8 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/icons";
 import { ModeToggle } from "@/components/ModeToggle";
+import type { Profile } from "@/lib/sanity";
 
-export const Navbar = () => {
+interface Props {
+  profile?: Profile | null;
+}
+
+export const Navbar = ({ profile }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -21,10 +26,13 @@ export const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const resumeHref = profile?.resumeURL ?? "/resume.pdf";
+
   const navLinks = [
-    { name: "Projects", href: "#projects" },
-    { name: "About", href: "#about" },
-    { name: "Resume", href: "/resume.pdf" },
+    { name: "Experience", href: "/#experience" },
+    { name: "Education", href: "/#education" },
+    { name: "Projects", href: "/#projects" },
+    { name: "Resume", href: resumeHref },
   ];
 
   return (
@@ -34,14 +42,15 @@ export const Navbar = () => {
       <div className="max-w-5xl mx-auto px-6 flex items-center justify-between">
         <a
           href="/"
-          className="text-xl font-bold tracking-tighter text-foreground flex items-center gap-2 p-1 rounded-md"
+          className="text-xl font-bold tracking-tighter text-foreground flex items-center p-1 rounded-md bg-zinc-800 hover:bg-zinc-700 transition-colors"
         >
-          <span className="bg-zinc-800 hover:bg-zinc-900 transition-colors text-white px-2 py-1 rounded-md text-base">
+          <img src="/favicon.ico" alt="Povindu" className="w-8 h-8" />
+          {/* <span className="bg-zinc-800 hover:bg-zinc-700 transition-colors text-white px-2 py-1 rounded-r-md text-base font-geist font-normal uppercase">
             Povindu
-          </span>
+          </span> */}
         </a>
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-8 font-geist">
           {navLinks.map((link) => (
             <a
               key={link.name}
@@ -103,16 +112,21 @@ export const Navbar = () => {
                   </a>
                 ))}
                 <hr className="border-border" />
-                <Button className="w-full text-zinc-900 dark:text-zinc-50 bg-white border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-950" asChild>
-                  <a
-                    href="/resume.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {profile?.resumeURL && (
+                  <Button
+                    className="w-full text-zinc-900 dark:text-zinc-50 bg-white border border-zinc-200 dark:border-zinc-700 dark:bg-zinc-950"
+                    asChild
                   >
-                    Download Resume
-                  </a>
-                </Button>
-                
+                    <a
+                      href={profile.resumeURL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Download Resume
+                    </a>
+                  </Button>
+                )}
+
                 <div className="flex items-center justify-center gap-4 mt-4">
                   <Button variant="ghost" size="icon" asChild>
                     <a

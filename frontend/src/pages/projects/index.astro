@@ -1,0 +1,74 @@
+---
+import MainLayout from "@/layouts/MainLayout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { sanityClient } from "@/lib/sanity";
+import { BlurFade } from "@/components/ui/blur-fade";
+import { Icon } from "astro-icon/components";
+import type { DevProject } from "@/lib/sanity";
+
+const query = `*[_type == "devProject"] | order(_createdAt desc) {
+  title,
+  subtitle,
+  slug,
+  summary,
+  profileImage,
+  techStack,
+  resumeURL
+}`;
+
+const projects = await sanityClient.fetch<DevProject[]>(query);
+---
+
+<MainLayout
+  title="All Projects | Povindu - Portfolio"
+  description="A complete archive of my work in software engineering, ranging from full-stack web applications to AI research and experimental tools."
+>
+  <main class="max-w-6xl mx-auto px-6 py-12 md:py-20 mt-10">
+    <div class="max-w-2xl mb-12 space-y-4">
+      <BlurFade delay={0.1} inView client:load>
+        <a
+          href="/"
+          class="inline-flex items-center text-sm font-medium text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white transition-colors mb-4"
+        >
+          <Icon name="ph:arrow-left-bold" class="mr-2 w-4 h-4" />
+          Back to Home
+        </a>
+      </BlurFade>
+
+      <BlurFade delay={0.2} inView client:load>
+        <h1
+          class="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white font-geist mb-4 mt-5"
+        >
+          All Projects
+        </h1>
+      </BlurFade>
+
+      <BlurFade delay={0.3} inView client:load>
+        <p
+          class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8"
+        >
+          A collection of my work in software engineering, ranging from
+          full-stack web applications to AI research and experimental tools.
+        </p>
+      </BlurFade>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {
+        projects.map((project, idx) => (
+          <BlurFade delay={0.4 + idx * 0.05} inView client:load>
+            <ProjectCard project={project} />
+          </BlurFade>
+        ))
+      }
+    </div>
+
+    {
+      projects.length === 0 && (
+        <div class="py-20 text-center">
+          <p class="text-zinc-500 dark:text-zinc-400">No projects found.</p>
+        </div>
+      )
+    }
+  </main>
+</MainLayout>

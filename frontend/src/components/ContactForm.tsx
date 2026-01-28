@@ -73,17 +73,24 @@ export function ContactForm() {
             </div>
           )}
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">
+            <div className="space-y-4">
+              <label htmlFor="name" className="text-sm font-geist font-normal">
                 Name
               </label>
-              <Input id="name" name="name" placeholder="John Doe" required />
+              <Input
+                className="mt-2"
+                id="name"
+                name="name"
+                placeholder="John Doe"
+                required
+              />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
+            <div className="space-y-4">
+              <label htmlFor="email" className="text-sm font-geist font-normal">
                 Email
               </label>
               <Input
+                className="mt-2"
                 id="email"
                 name="email"
                 type="email"
@@ -93,15 +100,15 @@ export function ContactForm() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="message" className="text-sm font-medium">
+          <div className="space-y-4">
+            <label htmlFor="message" className="text-sm font-geist font-normal">
               Message
             </label>
             <Textarea
               id="message"
               name="message"
               placeholder="Hi, I'd like to discuss a project..."
-              className="min-h-[120px]"
+              className="min-h-[120px] mt-2"
               required
             />
           </div>

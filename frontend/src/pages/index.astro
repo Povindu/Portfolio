@@ -7,6 +7,7 @@ import { ContactForm } from "@/components/ContactForm";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { EducationSection } from "@/components/EducationSection";
 import { HeroSection } from "@/components/HeroSection";
+import { Icon } from "astro-icon/components";
 
 const query = `*[_type == "devProject"] | order(_createdAt desc) {
   title,
@@ -30,28 +31,149 @@ const profile = await getProfile();
   description={profile?.shortBio}
 >
   {profile && <HeroSection client:load profile={profile} />}
+
+  <div class="border-t border-zinc-200 dark:border-zinc-900"></div>
+
   <section id="experience" class="max-w-6xl mx-auto px-6 py-10">
     <ExperienceSection client:load experiences={experiences} />
   </section>
+
+  <div class="border-t border-zinc-200 dark:border-zinc-900"></div>
 
   <section id="education" class="max-w-6xl mx-auto px-6 py-10">
     <EducationSection client:load educationList={educationList} />
   </section>
 
+  <div class="border-t border-zinc-200 dark:border-zinc-900"></div>
+
   <section
     id="projects"
-    class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto px-6 py-10"
+    class="py-0 my-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 max-w-6xl mx-auto px-6"
   >
-    {projects.map((project) => <ProjectCard project={project} />)}
+    <div class="max-w-6xl mx-auto px-6 mb-8 flex items-end justify-between">
+      <div>
+        <h2
+          class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white font-geist"
+        >
+          Featured Projects
+        </h2>
+        <p class="text-zinc-500 dark:text-zinc-400 mt-2 font-geist font-normal">
+          Drag to explore latest work
+        </p>
+      </div>
+
+      <div
+        class="hidden md:flex gap-2 text-zinc-300 dark:text-zinc-700 font-geist"
+      >
+        <a
+          href="/projects"
+          class="group flex items-center gap-3 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+        >
+          <span class="text-base font-medium">View All Projects</span>
+          <Icon
+            name="ph:arrow-right-bold"
+            class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+          />
+        </a>
+      </div>
+    </div>
+
+    <div class="relative w-full group">
+      <div
+        id="project-carousel"
+        class="flex gap-6 overflow-x-auto pb-8 pt-2 px-6 scrollbar-hide items-stretch cursor-grab active:cursor-grabbing select-none"
+      >
+        {
+          projects.map((project, index) => (
+            <div
+              class="shrink-0 w-[85vw] max-w-[400px] h-[500px] transform transition-transform duration-300 hover:-translate-y-2 pointer-events-none md:pointer-events-auto"
+              style={`animation-delay: ${index * 100}ms`}
+            >
+              <div class="h-full w-full pointer-events-auto">
+                <ProjectCard project={project} />
+              </div>
+            </div>
+          ))
+        }
+
+        {/* "View All" Card */}
+        <div
+          class="shrink-0 w-[200px] h-[500px] flex items-center justify-center"
+        >
+          <a
+            href="/projects"
+            class="group flex flex-col items-center gap-3 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+          >
+            <div
+              class="w-16 h-16 rounded-full border-2 border-zinc-200 dark:border-zinc-800 flex items-center justify-center group-hover:border-zinc-900 dark:group-hover:border-white transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg
+              >
+            </div>
+            <span class="font-medium">View All Projects</span>
+          </a>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <section id="contact" class="max-w-6xl mx-auto px-6 py-10">
-    <h2 class="text-3xl font-bold text-zinc-900 mb-6 dark:text-white">
+  <div class="border-t border-zinc-200 dark:border-zinc-900"></div>
+
+  <section id="contact" class="max-w-6xl mx-auto px-6 pt-10">
+    <h2
+      class="text-3xl font-bold text-zinc-900 mb-6 dark:text-white font-geist"
+    >
       Contact Me
     </h2>
-    <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+    <p
+      class="text-lg text-zinc-600 dark:text-zinc-400 mb-8 font-geist font-normal"
+    >
       Get in touch with me to discuss your next project or collaboration.
     </p>
     <ContactForm client:load />
   </section>
+
+  <script is:inline>
+    const slider = document.getElementById("project-carousel");
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    if (slider) {
+      slider.addEventListener("mousedown", (e) => {
+        isDown = true;
+        slider.classList.add("active");
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      });
+
+      slider.addEventListener("mouseleave", () => {
+        isDown = false;
+        slider.classList.remove("active");
+      });
+
+      slider.addEventListener("mouseup", () => {
+        isDown = false;
+        slider.classList.remove("active");
+      });
+
+      slider.addEventListener("mousemove", (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        slider.scrollLeft = scrollLeft - walk;
+      });
+    }
+  </script>
 </MainLayout>
