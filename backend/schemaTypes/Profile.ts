@@ -14,7 +14,7 @@ export default defineType({
     defineField({
       name: 'headline',
       title: 'Headline',
-      description: 'Your main H1 title (e.g. "Engineering Solutions")',
+      description: 'Your main H1 title (e.g. "Engineering Efficient Scalable Solutions")',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
@@ -24,6 +24,7 @@ export default defineType({
       description: 'The text under the headline on the homepage',
       type: 'text',
       rows: 3,
+      validation: (rule) => rule.max(200).warning('The short bio should be less than 200 characters'),
     }),
     defineField({
       name: 'email',
@@ -37,23 +38,18 @@ export default defineType({
       placeholder: 'Colombo, Sri Lanka',
     }),
     defineField({
-      name: 'availability',
-      title: 'Availability Status',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Available for Hire', value: 'available' },
-          { title: 'Open to Offers', value: 'open' },
-          { title: 'Busy / Not Looking', value: 'busy' },
-        ],
-        layout: 'radio'
-      }
-    }),
-    defineField({
       name: 'resume',
       title: 'Resume PDF',
       type: 'file',
       description: 'Upload your latest CV here',
+    }),
+    defineField({
+      name: 'profileImage',
+      title: 'Profile Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
     }),
     defineField({
       name: 'socialLinks',

@@ -13,6 +13,74 @@
  */
 
 // Source: schema.json
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type Education = {
+  _id: string
+  _type: 'education'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  institute?: string
+  logo?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  qualifications?: Array<{
+    qualificationName?: string
+    shortDescription?: string
+    grade?: string
+    startDate?: string
+    endDate?: string
+    _key: string
+  }>
+}
+
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top?: number
+  bottom?: number
+  left?: number
+  right?: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x?: number
+  y?: number
+  height?: number
+  width?: number
+}
+
+export type Experience = {
+  _id: string
+  _type: 'experience'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  position?: string
+  company?: string
+  logo?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  workMode?: 'onsite' | 'remote' | 'hybrid'
+  startDate?: string
+  endDate?: string
+  description?: string
+}
+
 export type SanityFileAssetReference = {
   _ref: string
   _type: 'reference'
@@ -31,11 +99,17 @@ export type Profile = {
   shortBio?: string
   email?: string
   location?: string
-  availability?: 'available' | 'open' | 'busy'
   resume?: {
     asset?: SanityFileAssetReference
     media?: unknown
     _type: 'file'
+  }
+  profileImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
   }
   socialLinks?: Array<{
     platform?: string
@@ -43,13 +117,6 @@ export type Profile = {
     icon?: string
     _key: string
   }>
-}
-
-export type SanityImageAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
 export type DevProject = {
@@ -91,22 +158,6 @@ export type DevProject = {
     _type: 'image'
     _key: string
   }>
-}
-
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top?: number
-  bottom?: number
-  left?: number
-  right?: number
-}
-
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x?: number
-  y?: number
-  height?: number
-  width?: number
 }
 
 export type Slug = {
@@ -213,12 +264,14 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
-  | SanityFileAssetReference
-  | Profile
   | SanityImageAssetReference
-  | DevProject
+  | Education
   | SanityImageCrop
   | SanityImageHotspot
+  | Experience
+  | SanityFileAssetReference
+  | Profile
+  | DevProject
   | Slug
   | SanityImagePaletteSwatch
   | SanityImagePalette
