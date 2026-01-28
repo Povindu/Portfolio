@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BlurFade } from "@/components/ui/blur-fade";
 import type { DevProject } from "@/lib/sanity";
+import { getTechIconName } from "@/lib/techIcons";
 
 export async function getStaticPaths() {
   const query = `*[_type == "devProject"]{ "slug": slug.current }`;
@@ -266,14 +267,18 @@ const statusColors: Record<string, string> = {
                 </h3>
                 <div class="flex flex-wrap gap-2">
                   {
-                    project.techStack?.map((tech: string) => (
-                      <Badge
-                        variant="secondary"
-                        className="px-3 py-1 text-xs font-medium bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border-transparent"
-                      >
-                        {tech}
-                      </Badge>
-                    ))
+                    project.techStack?.map((tech: string) => {
+                      const iconName = getTechIconName(tech);
+                      return (
+                        <Badge
+                          variant="secondary"
+                          className="px-3 py-1 text-xs font-medium bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 border-transparent flex items-center gap-1.5"
+                        >
+                          {iconName && <Icon name={iconName} class="w-4 h-4" />}
+                          <span>{tech}</span>
+                        </Badge>
+                      );
+                    })
                   }
                 </div>
               </div>
