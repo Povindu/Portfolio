@@ -55,7 +55,7 @@ export const Navbar = ({ profile }: Props) => {
             <a
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-foreground hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors"
+              className="text-base font-medium text-foreground hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors"
             >
               {link.name}
             </a>
