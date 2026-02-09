@@ -81,7 +81,7 @@ export function ContactForm() {
                 className="mt-2"
                 id="name"
                 name="name"
-                placeholder="John Doe"
+                placeholder="Your Name"
                 required
               />
             </div>
@@ -94,7 +94,7 @@ export function ContactForm() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="john@example.com"
+                placeholder="your@email.com"
                 required
               />
             </div>
